@@ -1,0 +1,20 @@
+# @package _global_
+defaults:
+  - /trainer: default
+  - /loader: default
+  - /dataset: eqtl_benchmark
+  - /optimizer: adamw
+  - /scheduler: plateau
+  - /callbacks: [base, checkpoint, lr]
+  - /model: crab
+
+train:
+  monitor: val/loss_epoch # Needed for plateau scheduler
+  mode: min
+
+encoder: id
+
+# we need this for classification!
+decoder:
+  _name_: sequence
+  mode: pool

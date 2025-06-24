@@ -1,0 +1,83 @@
+# @package _global_
+defaults:
+  - /pipeline: eqtl_benchmark 
+  - override /scheduler: cosine_warmup_timm
+
+# there are 8 datasets in this suite, choose 1 at a time, with their corresponding settings
+# name                                num_seqs        num_classes     median len    std
+# dummy_mouse_enhancers_ensembl       1210            2               2381          984.4  
+# demo_coding_vs_intergenomic_seqs    100_000         2               200           0
+# demo_human_or_worm                  100_000         2               200           0
+# human_enhancers_cohn                27791           2               500           0
+# human_enhancers_ensembl             154842          2               269           122.6
+# human_ensembl_regulatory            289061          3               401           184.3
+# human_nontata_promoters             36131           2               251           0
+# human_ocr_ensembl                   174756          2               315           108.1
+
+
+model:
+  _name_: dna_embedding
+
+
+# new task, allows you to pass a mask (or not), and will only average over those tokens
+task:
+  _name_: eqtl
+  loss: cross_entropy
+  metrics:
+    - cross_entropy
+  torchmetrics: null
+
+trainer:
+  accelerator: gpu
+  devices: 1
+  num_nodes: 1
+  accumulate_grad_batches: 1 # ${div_up:${train.global_batch_size}, ${eval:${trainer.devices} * ${dataset.batch_size} * ${trainer.num_nodes}}}
+  max_epochs: 10
+  precision: bf16  # bf16 only a100
+  gradient_clip_val: 1.0
+  # strategy: null
+
+
+dataset:
+  # batch_size: 32  # Per GPU
+  batch_size: 1
+  # max_length: 256 # 262144, 524288
+  # optional, default is max_length
+  # max_length_val: ${dataset.max_length}
+  # max_length_test: ${dataset.max_length}
+  tokenizer_name: char
+  add_eos: false
+  rc_aug: false  # reverse complement augmentation
+  return_mask: false
+  padding_side: left  # right is ok too, depending on what you want to do
+
+# scheduler:
+#   t_in_epochs: False
+#   t_initial: ${eval:${div_up:${dataset.train_len}, ${train.global_batch_size}} * ${trainer.max_epochs}}
+#   warmup_lr_init: 1e-6
+#   warmup_t: ${eval:${div_up:${dataset.train_len}, ${train.global_batch_size}} * ${trainer.max_epochs} * 0.01}
+#   lr_min: ${eval:0.1 * ${optimizer.lr}}
+scheduler:
+  # _name_: cosine_annealing  # 或使用 "cosine_warmup_timm" 的epoch模式
+  t_in_epochs: true         # 关键：启用epoch模式
+  t_initial: ${trainer.max_epochs}             # 总epoch数
+  lr_min: ${eval:0.1 * ${optimizer.lr}}             # 最低学习率
+  warmup_lr_init: 1e-7     # Warmup起始学习率
+  warmup_t: 0.3            # Warmup占30%的epoch（即0.9个epoch）
+
+
+optimizer:
+  lr: 5e-6
+  weight_decay: 0.1
+
+train:
+  gpu_mem: ${eval:"round(float(__import__('subprocess').check_output('nvidia-smi -i 0 --query-gpu=memory.total --format=csv,noheader,nounits', shell=True).strip().decode()) / 1000)"}
+  seed: 2222
+  global_batch_size: ${dataset.batch_size}
+  remove_test_loader_in_eval: true  # no test set in this benchmark
+  pretrained_model_strict_load: False  # false allows encoder/decoder to be used if new model uses it
+  # for loading backbone and not head, requires both of these flags below
+  pretrained_model_path: null # pretrained_models/weights.ckpt
+  pretrained_model_state_hook: # !for train, need to be set as load_backbone; for evaluation, need to be disabled.
+    _name_: load_backbone
+    freeze_backbone: false  # seems to work much better if false (ie finetune entire model)

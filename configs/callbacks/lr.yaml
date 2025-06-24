@@ -1,0 +1,2 @@
+lr_monitor:
+  logging_interval: step

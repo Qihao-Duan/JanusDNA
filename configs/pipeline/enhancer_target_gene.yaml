@@ -1,0 +1,21 @@
+# @package _global_
+defaults:
+  - /trainer: default # no use
+  - /loader: default # no use
+  - /dataset: enhancer_target_gene
+  - /task: multiclass_classification
+  - /optimizer: adamw
+  - /scheduler: plateau
+  - /callbacks: [base, checkpoint]
+  - /model: crab
+
+train:
+  monitor: val/loss_epoch # Needed for plateau scheduler
+  mode: min
+
+encoder: id
+
+# we need this for classification!
+decoder:
+  _name_: sequence
+  mode: pool

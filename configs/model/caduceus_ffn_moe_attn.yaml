@@ -1,0 +1,61 @@
+# Use open-source version of Mamba
+_name_: caduceus_ffn_moe_attn_lm
+config:
+  _target_: crab.configuration_caduceus_attention_moe.CaduceusConfig
+  # From original MambaConfig
+  d_model: 256
+  n_layer: 8
+  vocab_size: 12
+  ssm_cfg:
+    d_state: 16
+    d_conv: 4
+    expand: 2
+    dt_rank: "auto"
+    dt_min: 0.001
+    dt_max: 0.1
+    dt_init: "random"
+    dt_scale: 1.0
+    dt_init_floor: 1e-4
+    conv_bias: true
+    bias: false
+    use_fast_path: true
+  rms_norm: true
+  fused_add_norm: true
+  residual_in_fp32: false
+  pad_vocab_size_multiple: 8
+  # Not in original MambaConfig, but default arg in create_block in mamba_ssm repo; used in layer norm
+  norm_epsilon: 1e-5
+
+  # Used in init_weights
+  initializer_cfg:
+    initializer_range: 0.02
+    rescale_prenorm_residual: true
+    n_residuals_per_layer: 1
+
+  # Caduceus-specific params
+  bidirectional: true,
+  bidirectional_strategy: "add"
+  bidirectional_weight_tie: true
+  rcps: false
+
+  # Used for RCPSEmbedding / RCPSLMHead (will be filled in during model instantiation using info from tokenizer)
+  complement_map: null
+
+  # added specifically for caduceus_ffn_moe_attn
+  output_hidden_states: false
+  return_dict: true
+
+  # expert
+  expert_layer_period: 4
+  expert_layer_offset: 2
+  num_experts: 4
+  intermediate_factor: 4
+  # attn
+  num_attention_heads: 4
+  is_causal: False
+  attention_dropout: 0.0
+
+  attn_layer_period: 4
+  attn_layer_offset: 2
+
+
