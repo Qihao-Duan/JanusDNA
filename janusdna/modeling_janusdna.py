@@ -2625,7 +2625,12 @@ class JanusDNAForCausalLM(JanusDNAPreTrainedModel):
             cache_position: Optional[torch.LongTensor] = None,
             num_logits_to_keep: Optional[Union[int, None]] = None,
     ) -> Union[Tuple, MoeCausalLMOutputWithPast]:
+        r"""
+        The forward pass of the JanusDNA model.
 
+        Returns:
+        """
+        
         output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
         output_router_logits = (
             output_router_logits if output_router_logits is not None else self.config.output_router_logits
