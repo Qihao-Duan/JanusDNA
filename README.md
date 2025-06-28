@@ -4,6 +4,11 @@
 
 # JanusDNA: A Powerful Bi-directional Hybrid DNA Foundation Model
 
+## Update
+<a name="update"></a>
+
+- **2024-10-15**: Pretrained JanusDNA weights are now available for download [here](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FHDT0RN&version=DRAFT).
+
 
 ## Getting Started
 <a name="getting_started"></a>
