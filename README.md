@@ -7,6 +7,55 @@
 ## Update
 <a name="update"></a>
 
+- **TODO**: Pre-training weights for models with final MLPs are on the way. 
+- **2025-08-01**: Attaching two MLP layers after Janus fusion layer significantly improves model performance with minimal parameter scaling.
+    
+    `JanusDNA_mlp`  are the latest ones.
+
+    - Nucleotide Transformer (NT)
+    
+      
+      |  | JanusDNA | JanusDNA | JanusDNA_mlp | JanusDNA_mlp |
+      | --- | --- | --- | --- | --- |
+      |  | w/ midattn | w/o midattn | w/ midattn; w/ rc | w/o midattn; w/ rc |
+      | size(M) | 1.980 | 1.988 | 2.001 | 2.009 |
+      | H3 | 0.821±0.021 | 0.824±0.012 | **0.835±0.009** | 0.831±0.023 |
+      | H3K14ac | 0.665 ± 0.034 | 0.685±0.016 | **0.729±0.022** | 0.718±0.026 |
+      | H3K36me3 | 0.658 ± 0.024 | 0.670±0.012 | **0.702±0.015** | 0.699±0.025 |
+      | H3K4me1 | 0.563 ± 0.041 | 0.571±0.018 | 0.615±0.035 | **0.616±0.018** |
+      | H3K4me2 | 0.509 ± 0.056 | 0.548±0.022 | **0.589±0.023** | 0.586±0.019 |
+      | H3K4me3 | 0.605 ± 0.030 | 0.629±0.022 | **0.688±0.026** | 0.675±0.014 |
+      | H3K79me3 | 0.716 ± 0.017 | 0.727±0.023  | **0.747±0.013** | 0.743±0.009 |
+      | H3K9ac | 0.641 ± 0.024 | 0.639±0.019 | **0.673±0.014** | 0.661±0.027 |
+      | H4 | 0.809 ± 0.021 | **0.816±0.008** | 0.812±0.011 | 0.813±0.013 |
+      | H4ac | 0.637±0.060 | 0.653±0.034 | 0.698±0.013 | **0.705±0.023** |
+      | enhancers | 0.564 ± 0.022 | 0.535±0.036 | 0.559±0.042 | 0.542±0.044 |
+      | EnhancersTypes | 0.462±0.049 | 0.470±0.025 | 0.503±0.038 | 0.492±0.096 |
+      | PromoterAll | 0.969±0.002 | **0.971±0.002** | 0.970±0.002 | 0.970±0.003 |
+      | PromoterNoTata | 0.971±0.003 | **0.971±0.002** | 0.971±0.004 | 0.971±0.003 |
+      | PromoterTata | 0.956±0.010 | 0.958±0.008 | 0.958±0.007 | 0.960±0.008 |
+      | SpliceSitesAll | 0.963±0.022 | 0.960±0.009 | **0.967±0.005** | 0.943±0.020 |
+      | SpliceSitesAcceptors | 0.949±0.020 | 0.939±0.022 | 0.957±0.012 | 0.961±0.009 |
+      | SpliceSitesDonors | 0.947±0.015 | 0.936±0.014 | 0.948±0.008 | 0.935±0.016 |
+
+    - DNALONGBENCH
+
+
+        |  | Caduceus-PH | JanusDNA; w/o midattn | JanusDNA_mlp; w/o midattn|
+        | --- | --- | --- | --- |
+        | size | 7.7M | 7.662 M | 7.745 M |
+        | AT | 0.690 | 0.802 | **0.851** |
+        | AS | 0.759 | 0.740 | **0.768** |
+        | CCF | 0.689 | 0.770 | **0.801** |
+        | MS | 0.789 | 0.803 | **0.864** |
+        | NT | 0.841 | 0.877 | **0.913** |
+        | SNSES | 0.812 | 0.874 | **0.903** |
+        | SSELL | 0.691 | 0.706 | **0.845** |
+        | Thyroid | 0.703 | 0.752 | **0.792** |
+        | WB | 0.768 | 0.794 | **0.821** |
+
+
+
 - **2025-06-28**: Pretrained JanusDNA weights are now available for download [here](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FHDT0RN&version=DRAFT).
 
 

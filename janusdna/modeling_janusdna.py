@@ -2213,6 +2213,13 @@ class JanusDNAModel(JanusDNAPreTrainedModel):
             self.final_attention = FinalAttention(config, layer_idx=config.num_hidden_layers)
 
         self.final_fusion = self.final_fusion_repos_formasked if config.layer_fusion_strategy == "pool" else self.final_fusion_first_half
+        
+        self.final_mlp = nn.Sequential(
+            nn.Linear(config.hidden_size, config.hidden_size * 2),
+            ACT2FN[config.hidden_act],
+            nn.Linear(config.hidden_size * 2, config.hidden_size),
+            ACT2FN[config.hidden_act],
+        )
 
         
     def final_fusion_pool(self, hidden_states):
@@ -2402,6 +2409,9 @@ class JanusDNAModel(JanusDNAPreTrainedModel):
 
 
         hidden_states = self.final_layernorm(hidden_states)
+        residual = hidden_states
+        hidden_states = self.final_mlp(hidden_states)
+        hidden_states = residual + hidden_states  # residual connection
 
         # add hidden states from the last decoder layer
         if output_hidden_states:
