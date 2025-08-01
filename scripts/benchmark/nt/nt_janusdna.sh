@@ -103,7 +103,7 @@ run_task() {
         wandb.id="${WANDBID}" \
         +wandb.tags=\["seed-${seed}"\]  \
         +wandb.entity="cardiors" \
-        hydra.run.dir="${HYDRA_RUN_DIR}" \
+        hydra.run.dir="${hydra_run_dir}" \
         > "${LOG_FILE}" 2>&1 &
 
     GPU_TASKS[${gpu_id}]=$!
