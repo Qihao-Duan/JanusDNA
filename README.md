@@ -7,7 +7,7 @@
 ## Update
 <a name="update"></a>
 
-- **TODO**: Pre-training weights for models with final MLPs are on the way. 
+- **2025-08-29**: Pre-training weights for models with final MLPs are available [here](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FHDT0RN&version=DRAFT). 
 - **2025-08-01**: Attaching two MLP layers after Janus fusion layer significantly improves model performance with minimal parameter scaling.
     
     `JanusDNA_mlp`  are the latest ones.
